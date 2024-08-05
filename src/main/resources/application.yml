@@ -1,0 +1,31 @@
+jwt:
+  secret: 9dshcjdcjdjndjncjdncd9vdcskvkdncsmmskcmkvmdmfmvdksnanwajkuvidvhjdh3jdssxs
+  lifetime: 30m
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#swagger:
+#  api:
+#    title: Task Management API
+#    description: API for Task Management System
+#    version: 1.0.0
+#    base-package: com.example.taskmanagement.controller
+
+server:
+  port:
+    8080

@@ -2,11 +2,15 @@ package com.krr006.task_management.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@Builder
+@AllArgsConstructor
 @Data
 @RequiredArgsConstructor
 @Entity
@@ -29,7 +33,7 @@ public class Task {
     private User author;
 
     @ManyToOne
-    @JoinColumn(name = "assignee_id", nullable = false)
+    @JoinColumn(name = "assignee_id")
     private User assignee;
 
 

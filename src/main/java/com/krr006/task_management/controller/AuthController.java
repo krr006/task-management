@@ -6,6 +6,7 @@ import com.krr006.task_management.dto.JwtSignUpRequest;
 import com.krr006.task_management.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public JwtResponse signIn(@RequestBody @Valid JwtSignInRequest request) {
+    public ResponseEntity<?> signIn(@RequestBody @Valid JwtSignInRequest request) {
         return authenticationService.signIn(request);
     }
 }

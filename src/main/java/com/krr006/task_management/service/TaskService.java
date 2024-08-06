@@ -1,5 +1,6 @@
 package com.krr006.task_management.service;
 
+import com.krr006.task_management.dto.CommentDTO;
 import com.krr006.task_management.dto.TaskDTO;
 import com.krr006.task_management.entity.*;
 import com.krr006.task_management.exception.TaskNotFoundException;
@@ -8,16 +9,12 @@ import com.krr006.task_management.repository.CommentRepository;
 import com.krr006.task_management.repository.TaskRepository;
 import com.krr006.task_management.repository.UserRepository;
 import com.krr006.task_management.utils.CustomEnumValidator;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.krr006.task_management.entity.Task;
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -47,15 +44,19 @@ public class TaskService {
     }
 
     @Transactional
-    public Task updateTask(Long id, Task updatedTask) {
+    public Task updateTask(Long id, TaskDTO updatedtaskDTO) {
         var existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
-        existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
-        existingTask.setStatus(updatedTask.getStatus());
-        existingTask.setPriority(updatedTask.getPriority());
-        existingTask.setAssignee(updatedTask.getAssignee());
+        existingTask.setTitle(updatedtaskDTO.getTitle());
+        existingTask.setDescription(updatedtaskDTO.getDescription());
+        existingTask.setStatus(CustomEnumValidator.validateStatus(updatedtaskDTO.getStatus()));
+        existingTask.setPriority(CustomEnumValidator.validatePriority(updatedtaskDTO.getPriority()));
+//        Long authorId = updatedtaskDTO.getAuthorId();
+//        var author = userRepository.findById(authorId)
+//                .orElseThrow(() -> new TaskNotFoundException(authorId));
+//
+//        existingTask.setAuthor(author);
 
         return taskRepository.save(existingTask);
     }
@@ -76,8 +77,7 @@ public class TaskService {
 
     public Task setTaskStatus(Long id, String updatedStatus){
         var existingTask = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
-        Status status = Status.valueOf(updatedStatus.toUpperCase());
-        existingTask.setStatus(status);
+        existingTask.setStatus(CustomEnumValidator.validateStatus(updatedStatus));
 
         return taskRepository.save(existingTask);
     }
@@ -91,19 +91,25 @@ public class TaskService {
     }
 
     @Transactional
-    public Comment addComment(Long taskId, Comment comment) {
+    public Comment addComment(Long taskId, CommentDTO commentDTO) {
         var task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
-        comment.setTask(task);
+
+        var comment = Comment.builder()
+                .text(commentDTO.getText())
+                .task(task)
+                .build();
+
         commentRepository.save(comment);
+
         return comment;
     }
 
-    public Page<Task> findTasksByAuthorId(Long authorId, Pageable pageable) {
-        return taskRepository.findByAuthorId(authorId, pageable);
+    public List<Task> findTasksByAuthorId(Long authorId) {
+        return taskRepository.findByAuthorId(authorId);
     }
 
-    public Page<Task> findTasksByAssignee(Long assigneeId, Pageable pageable) {
-        return taskRepository.findByAssigneeId(assigneeId, pageable);
+    public List<Task> findTasksByAssigneeId(Long assigneeId) {
+        return taskRepository.findByAssigneeId(assigneeId);
     }
 
     public List<Comment> findCommentsByTaskId(Long taskId) {

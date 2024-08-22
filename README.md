@@ -48,15 +48,7 @@
 - **Конфигурация безопасности:**
     - `SecurityConfig`: Настраивает безопасность приложения, включая использование JWT токенов и шифрование паролей.
 
-## Настройка и запуск
 
-### Локальная установка
-
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/ваш-репозиторий/task-management-system.git
-   cd task-management-system
-   ```
 
 
 ## Сборка и запуск проекта
@@ -65,7 +57,7 @@
 
    Клонируйте репозиторий:
    ```bash
-   git clone https://github.com/ваш-репозиторий/task-management-system.git
+   git clone https://github.com/krr006/task-management.git
    cd task-management-system
    ```
 

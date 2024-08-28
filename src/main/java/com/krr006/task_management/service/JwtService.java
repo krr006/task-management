@@ -29,7 +29,8 @@ public class JwtService {
      * @param token токен
      * @return имя пользователя
      */
-    public String extractUserName(String token) {
+    public String
+    extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 

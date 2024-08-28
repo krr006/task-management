@@ -9,5 +9,6 @@ public class TaskDTO {
     private String status;
     private String priority;
     private Long authorId;
+    private String comment;
 
 }

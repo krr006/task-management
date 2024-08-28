@@ -36,6 +36,9 @@ public class Task {
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
 
 
 }

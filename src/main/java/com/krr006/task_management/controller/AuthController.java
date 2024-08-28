@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/sign-up")
+
     public JwtResponse signUp(@RequestBody @Valid JwtSignUpRequest request) {
         return authenticationService.signUp(request);
     }

@@ -18,7 +18,10 @@ spring:
         format_sql: true
         show_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
+#
+#  mvc:
+#    path match:
+#      matching-strategy: ANT_PATH_MATCHER
 #swagger:
 #  api:
 #    title: Task Management API
@@ -28,4 +31,15 @@ spring:
 
 server:
   port:
-    8443
+    8080
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        security.access: DEBUG
+
+
+

@@ -14,7 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.krr006.task_management.entity.Task;
+
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +43,12 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(authorId));
         task.setAuthor(author);
 
+        task = taskRepository.save(task);
+
+        if (taskDTO.getComment() != null && !taskDTO.getComment().isEmpty()) {
+            var comment = addComment(task.getId(), new CommentDTO(taskDTO.getComment()));
+            task.getComments().add(comment);
+        }
 
         return taskRepository.save(task);
     }
@@ -52,11 +62,6 @@ public class TaskService {
         existingTask.setDescription(updatedtaskDTO.getDescription());
         existingTask.setStatus(CustomEnumValidator.validateStatus(updatedtaskDTO.getStatus()));
         existingTask.setPriority(CustomEnumValidator.validatePriority(updatedtaskDTO.getPriority()));
-//        Long authorId = updatedtaskDTO.getAuthorId();
-//        var author = userRepository.findById(authorId)
-//                .orElseThrow(() -> new TaskNotFoundException(authorId));
-//
-//        existingTask.setAuthor(author);
 
         return taskRepository.save(existingTask);
     }
@@ -100,21 +105,23 @@ public class TaskService {
                 .build();
 
         commentRepository.save(comment);
-
         return comment;
     }
 
     public List<Task> findTasksByAuthorId(Long authorId) {
-        return taskRepository.findByAuthorId(authorId);
+        List<Task> tasks = taskRepository.findByAuthorId(authorId);
+        tasks.forEach(task -> task.setComments(commentRepository.findByTaskId(task.getId())));
+
+        return tasks;
     }
 
     public List<Task> findTasksByAssigneeId(Long assigneeId) {
-        return taskRepository.findByAssigneeId(assigneeId);
+        List<Task> tasks = taskRepository.findByAssigneeId(assigneeId);
+        tasks.forEach(task -> task.setComments(commentRepository.findByTaskId(task.getId())));
+
+        return tasks;
     }
 
-    public List<Comment> findCommentsByTaskId(Long taskId) {
-        return commentRepository.findByTaskId(taskId);
-    }
 
     public List<Task> findAllTasks() {
         return taskRepository.findAll();

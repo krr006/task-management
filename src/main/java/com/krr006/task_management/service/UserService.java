@@ -2,6 +2,8 @@ package com.krr006.task_management.service;
 
 import com.krr006.task_management.entity.Role;
 import com.krr006.task_management.entity.User;
+import com.krr006.task_management.exception.EmailAlreadyExistsException;
+import com.krr006.task_management.exception.UsernameAlreadyExistsException;
 import com.krr006.task_management.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,12 +33,11 @@ public class UserService {
      */
     public User create(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            // Заменить на свои исключения
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UsernameAlreadyExistsException("User with this username already exists");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+            throw new EmailAlreadyExistsException("User with this email already exists");
         }
 
         return save(user);
@@ -49,7 +50,7 @@ public class UserService {
      */
     public User getByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     }
 
